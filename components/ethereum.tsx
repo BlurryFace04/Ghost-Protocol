@@ -18,7 +18,6 @@ export function EthereumProvider({ children }: { children: React.ReactNode }) {
     <WagmiConfig config={config}>
       <ConnectKitProvider>
         {children}
-        {/* <ConnectKitButton /> */}
       </ConnectKitProvider>
     </WagmiConfig>
   );
