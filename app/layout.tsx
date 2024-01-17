@@ -8,10 +8,10 @@ import { Header } from '@/components/header';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Omniport AI Chatbot',
+    default: 'Ghost NFT Protocol',
     template: `%s - Next.js AI Chatbot`
   },
-  description: 'Omniport AI Chatbot built with Next.js',
+  description: 'Mint GHO Tokens by submitting NFTs as collateral',
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'white' },
     { media: '(prefers-color-scheme: dark)', color: 'black' }
