@@ -1,11 +1,34 @@
 'use client'
 
 import * as React from 'react'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi'
 
 function Page() {
   const { address } = useAccount();
+
+  const [NFTs, setNFTs] = useState<any>([]);
+  const [loadingNFTs, setLoadingNFTs] = useState(true);
+
+  useEffect(() => {
+    if (!address) return;
+    console.log("Address: ", address);
+
+    const fetchNFTs = async () => {
+      try {
+        const response = await fetch(`/api/nfts/fetch/${address}`);
+        const data = await response.json();
+        console.log("NFTs: ", data)
+        setNFTs(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoadingNFTs(false);
+      }
+    };
+
+    fetchNFTs();
+  }, []);
 
   return (
     <div>
