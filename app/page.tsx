@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi'
+import Image from 'next/image';
 
 import {
   Card,
@@ -12,7 +13,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious
+} from "@/components/ui/carousel";
 
 interface NFT {
   collectionName: string,
@@ -80,13 +93,63 @@ function Page() {
           <p className="text-center text-xl mt-4">Please connect your wallet to see your NFT collaterals and borrowings</p>
         </div>
       ) : (
-        <div>
-
-          {/* {Object.entries(groupedNFTs).map(([collectionName, nfts]) => (
-            <div key={collectionName}>
-              <h2>{collectionName}</h2>
+        <div style={{ padding: '200px', display: 'flex', justifyContent: 'space-between' }}>
+          {/* Left side */}
+          <div style={{ width: '50%' }}> 
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-xl">Your supplies</CardTitle>
+                {/* <CardDescription>Card Description</CardDescription> */}
+              </CardHeader>
+              <CardContent>
+                {Object.entries(groupedNFTs).map(([collectionName, nfts]) => (
+                  <div>
+                    <CardTitle className="text-lg mb-4">{collectionName}</CardTitle>
+                    <Carousel>
+                      <CarouselContent>
+                        {nfts.map((nft, index) => (
+                          <CarouselItem key={nft.tokenId} className="md:basis-1/2 lg:basis-1/4">
+                            <div className="p-1">
+                              <Image 
+                                src={nft.image} 
+                                alt={nft.name} 
+                                width={200}
+                                height={200}
+                              />
+                              <p>{nft.name}</p>
+                            </div>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  </div>
+                ))}
+              </CardContent>
+              {/* <CardFooter>
+                <p>Card Footer</p>
+              </CardFooter> */}
+            </Card>
+          </div>
+          {/* Right side */}
+          <div style={{ width: '50%', paddingLeft: '10px' }}>
+            {/* Content for the right side */}
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Card Title</CardTitle>
+                  <CardDescription>Card Description</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p>Card Content</p>
+                </CardContent>
+                <CardFooter>
+                  <p>Card Footer</p>
+                </CardFooter>
+              </Card>
             </div>
-          ))} */}
+          </div>
         </div>
       )}
     </div>
