@@ -26,6 +26,25 @@ import {
   CarouselNext,
   CarouselPrevious
 } from "@/components/ui/carousel";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 
 interface NFT {
   collectionName: string,
@@ -93,31 +112,83 @@ function Page() {
           <p className="text-center text-xl mt-4">Please connect your wallet to see your NFT collaterals and borrowings</p>
         </div>
       ) : (
-        <div style={{ padding: '200px', display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ padding: '200px', display: 'flex', justifyContent: 'space-between' }} className="overflow-y-auto max-h-[94vh] nft-scroll">
           {/* Left side */}
           <div style={{ width: '50%' }}> 
             <Card>
               <CardHeader>
                 <CardTitle className="text-xl">Your supplies</CardTitle>
-                {/* <CardDescription>Card Description</CardDescription> */}
               </CardHeader>
-              <CardContent>
-                {Object.entries(groupedNFTs).map(([collectionName, nfts]) => (
-                  <div>
+              <CardContent className='pl-16 pr-16'>
+                {/* {Object.entries(groupedNFTs).map(([collectionName, nfts]) => (
+                  <div className="pb-4">
                     <CardTitle className="text-lg mb-4">{collectionName}</CardTitle>
                     <Carousel>
                       <CarouselContent>
                         {nfts.map((nft, index) => (
-                          <CarouselItem key={nft.tokenId} className="md:basis-1/2 lg:basis-1/4">
-                            <div className="p-1">
-                              <Image 
-                                src={nft.image} 
-                                alt={nft.name} 
-                                width={200}
-                                height={200}
-                              />
-                              <p>{nft.name}</p>
-                            </div>
+                          <CarouselItem key={nft.tokenId} className="md:basis-1/2 lg:basis-1/3">
+                            <Card>
+                              <CardContent className='p-0 rounded-lg'>
+                                <Image 
+                                  src={nft.image} 
+                                  alt={nft.name} 
+                                  width={240}
+                                  height={240}
+                                  className='rounded-t-lg'
+                                />
+                              </CardContent>
+                              <CardContent className="p-4">
+                                <Label className="text-md pl-2">{nft.name}</Label>
+                                <div className="flex items-center space-x-2 pl-2 pt-2">
+                                  <Label htmlFor="collateral">collateral</Label>
+                                  <Switch id="collateral" />
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </CarouselItem>
+                        ))}
+                      </CarouselContent>
+                      <CarouselPrevious />
+                      <CarouselNext />
+                    </Carousel>
+                  </div>
+                ))} */}
+              </CardContent>
+            </Card>
+            <Card className="mt-4">
+              <CardHeader>
+                <CardTitle className="text-xl">Assets to supply</CardTitle>
+              </CardHeader>
+              <CardContent className='pl-16 pr-16'>
+                {Object.entries(groupedNFTs).map(([collectionName, nfts]) => (
+                  <div className="pb-4">
+                    <CardTitle className="text-lg mb-4">{collectionName}</CardTitle>
+                    <Carousel>
+                      <CarouselContent>
+                        {nfts.map((nft, index) => (
+                          <CarouselItem key={nft.tokenId} className="md:basis-1/2 lg:basis-1/3">
+                            <Card>
+                              <CardContent className='p-0 rounded-lg'>
+                                <Image 
+                                  src={nft.image} 
+                                  alt={nft.name} 
+                                  width={240}
+                                  height={240}
+                                  className='rounded-t-lg'
+                                />
+                              </CardContent>
+                              <CardContent className="p-4">
+                                <Label className="text-md pl-2">{nft.name}</Label>
+                                <div className="flex items-center space-x-2 pl-2 pt-2">
+                                  <Label htmlFor="collateral">collateral</Label>
+                                  <Switch id="collateral" />
+                                </div>
+                                {/* <div className="flex items-center space-x-2 mt-2">
+                                  <Button className="p-4" variant="outline">Supply</Button>
+                                  <Button variant="outline" className="p-4">Withdraw</Button>
+                                </div> */}
+                              </CardContent>
+                            </Card>
                           </CarouselItem>
                         ))}
                       </CarouselContent>
@@ -127,26 +198,87 @@ function Page() {
                   </div>
                 ))}
               </CardContent>
-              {/* <CardFooter>
-                <p>Card Footer</p>
-              </CardFooter> */}
             </Card>
           </div>
           {/* Right side */}
-          <div style={{ width: '50%', paddingLeft: '10px' }}>
+          <div style={{ width: '50%', paddingLeft: '15px' }}>
             {/* Content for the right side */}
             <div>
               <Card>
                 <CardHeader>
-                  <CardTitle>Card Title</CardTitle>
-                  <CardDescription>Card Description</CardDescription>
+                  <CardTitle className="text-xl">Your borrows</CardTitle>
+                  <CardDescription className="pt-2">
+                    <Badge variant="outline" className="rounded-sm">Borrow power used 99%</Badge>
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p>Card Content</p>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[175px]">Asset</TableHead>
+                        <TableHead className="text-center w-[170px]">Debt</TableHead>
+                        <TableHead className="text-center w-[170px]">APY</TableHead>
+                        <TableHead></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center space-x-3 mt-2">
+                            <Avatar> 
+                              <AvatarImage src="https://app.aave.com/icons/tokens/gho.svg" alt="GHO"/>
+                              <AvatarFallback>GHO</AvatarFallback>
+                            </Avatar>
+                            <Label>GHO</Label>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">0.1134539</TableCell>
+                        <TableCell className="text-center">2.02 %</TableCell>
+                        <TableCell className="text-right">
+                          <Button>Repay</Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
                 </CardContent>
-                <CardFooter>
-                  <p>Card Footer</p>
-                </CardFooter>
+              </Card>
+              <Card className="mt-4">
+                <CardHeader>
+                  <CardTitle className="text-xl">Assets to borrow</CardTitle>
+                  {/* <CardDescription className="pt-2">
+                    <Badge variant="outline" className="rounded-sm">Borrow power used 99%</Badge>
+                  </CardDescription> */}
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[175px]">Asset</TableHead>
+                        <TableHead className="text-center w-[170px]">Available</TableHead>
+                        <TableHead className="text-center w-[170px]">APY</TableHead>
+                        <TableHead></TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center space-x-3 mt-2">
+                            <Avatar> 
+                              <AvatarImage src="https://app.aave.com/icons/tokens/gho.svg" alt="GHO"/>
+                              <AvatarFallback>GHO</AvatarFallback>
+                            </Avatar>
+                            <Label>GHO</Label>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">633.60</TableCell>
+                        <TableCell className="text-center">2.02 %</TableCell>
+                        <TableCell className="text-right">
+                          <Button>Borrow</Button>
+                        </TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
               </Card>
             </div>
           </div>

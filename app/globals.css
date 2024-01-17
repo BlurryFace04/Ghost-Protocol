@@ -80,3 +80,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* For Webkit Browsers */
+.nft-scroll::-webkit-scrollbar {
+  width: 9px;
+}
+
+.nft-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.nft-scroll::-webkit-scrollbar-thumb {
+  background: #000;
+  border-radius: 6px;
+}
+
+.nft-scroll::-webkit-scrollbar-thumb:hover {
+  background: #111;
+}
+
+/* For Firefox */
+.nft-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
+}

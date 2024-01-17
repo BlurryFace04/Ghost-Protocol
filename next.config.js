@@ -2,7 +2,8 @@
 const nextConfig = {
   images: {
     domains: [
-      'metadata.degods.com'
+      'metadata.degods.com',
+      'ipfs.io'
     ],
   },
   webpack: config => {
