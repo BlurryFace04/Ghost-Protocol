@@ -37,6 +37,7 @@
  
   .dark {
     --background: 240 10% 3.9%;
+    /* --background: 259 17.2% 63.5%; */
     --foreground: 0 0% 98%;
  
     --card: 240 10% 3.9%;
@@ -51,7 +52,8 @@
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
  
-    --muted: 240 3.7% 15.9%;
+    /* --muted: 240 3.7% 15.9%; */
+    --muted: 240 20% 26.2%;
     --muted-foreground: 240 5% 64.9%;
  
     --accent: 240 3.7% 15.9%;
@@ -64,6 +66,10 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
   }
+}
+
+.text-2xl {
+  font-size: 1.8rem;
 }
  
 @layer base {
