@@ -166,7 +166,7 @@ function Page() {
                     <Carousel>
                       <CarouselContent>
                         {nfts.map((nft, index) => (
-                          <CarouselItem key={nft.tokenId} className="md:basis-1/2 lg:basis-1/3">
+                          <CarouselItem key={nft.tokenId} className="xl:basis-1/2 2xl:basis-1/3">
                             <Card>
                               <CardContent className='p-0 rounded-lg'>
                                 <Image 

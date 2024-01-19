@@ -1,8 +1,8 @@
 import { Alchemy, Network } from "alchemy-sdk";
 
 const alchemy = new Alchemy({
-  apiKey: process.env.ALCHEMY_API_KEY,
-  network: Network.ETH_SEPOLIA,
+  apiKey: process.env.GOERLI_API_KEY,
+  network: Network.ETH_GOERLI,
 });
 
 export const GET = async (req, { params }) => {

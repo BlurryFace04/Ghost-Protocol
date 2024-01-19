@@ -1,8 +1,8 @@
 import { Connector, WagmiConfig, createConfig } from "wagmi";
-import { sepolia } from "wagmi/chains";
+import { goerli } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultConfig, ConnectKitButton } from "connectkit";
 
-const chains = [sepolia];
+const chains = [goerli];
 
 const config = createConfig(
   getDefaultConfig({
