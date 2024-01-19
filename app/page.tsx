@@ -2,8 +2,10 @@
 
 import * as React from 'react'
 import { useState, useEffect } from 'react';
-import { useAccount } from 'wagmi'
+import { useAccount, useContractWrite, useContractRead, useWaitForTransaction } from 'wagmi'
 import Image from 'next/image';
+import FacilitatorContractABI from './FacilitatorContractABI.json';
+import ERC721ABI from './ERC721ABI.json';
 
 import {
   Card,
@@ -57,8 +59,59 @@ interface NFT {
   tokenType: string
 }
 
+const facilitatorContractAddress = '0xAdbe6d7AbD11cef2682Eb18Ff6A95fa7014463f3';
+
 interface GroupedNFTs {
   [collectionName: string]: NFT[];
+}
+
+function NFTItem({ nft }: { nft: NFT}) {
+  const { address } = useAccount();
+  const [isApproving, setIsApproving] = useState(false);
+
+  const { data: isApproved } = useContractRead({
+    address: nft.contractAddress as `0x${string}`,
+    abi: ERC721ABI,
+    functionName: 'isApprovedForAll',
+    args: [address, facilitatorContractAddress]
+  });
+
+  const { data: approveData, write: approveNFT, isLoading: isApproveLoading, error: approveError } = useContractWrite({
+    address: nft.contractAddress as `0x${string}`,
+    abi: ERC721ABI,
+    functionName: 'setApprovalForAll',
+    args: [facilitatorContractAddress, true],
+  });
+
+  const { write: depositNFT } = useContractWrite({
+    address: facilitatorContractAddress, 
+    abi: FacilitatorContractABI,
+    functionName: 'depositNFT',
+    args: [nft.contractAddress, nft.tokenId]
+  });
+
+  const handleSupply = async () => {
+    if (!isApproved) {
+      setIsApproving(true);
+      await approveNFT();
+    } else {
+      depositNFT();
+    }
+  };
+
+  useEffect(() => {
+    if (!isApproveLoading && isApproving && !approveError) {
+      setIsApproving(false);
+      depositNFT();
+    }
+    if (approveError) {
+      setIsApproving(false);
+    }
+  }, [isApproveLoading, isApproving, approveError, depositNFT]);
+
+  return (
+    <Button variant='outline' onClick={handleSupply}>Supply</Button>
+  );
 }
 
 function Page() {
@@ -172,16 +225,18 @@ function Page() {
                                 <Image 
                                   src={nft.image} 
                                   alt={nft.name} 
-                                  width={240}
-                                  height={240}
+                                  width={400}
+                                  height={400}
                                   className='rounded-t-lg'
                                 />
                               </CardContent>
                               <CardContent className="p-4">
                                 <Label className="text-md pl-2">{nft.name}</Label>
                                 <div className="flex items-center space-x-2 pl-2 pt-2">
-                                  <Label htmlFor="collateral">collateral</Label>
-                                  <Switch id="collateral" />
+                                  {/* <Label htmlFor="collateral">collateral</Label> */}
+                                  {/* <Switch id="collateral" /> */}
+                                  {/* <Button variant="outline" className="">Supply</Button> */}
+                                  <NFTItem key={nft.tokenId} nft={nft}/>
                                 </div>
                                 {/* <div className="flex items-center space-x-2 mt-2">
                                   <Button className="p-4" variant="outline">Supply</Button>
