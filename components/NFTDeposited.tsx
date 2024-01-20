@@ -3,7 +3,7 @@ import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import FacilitatorContractABI from '.././FacilitatorContractABI.json';
 import { Button } from "@/components/ui/button";
 
-const facilitatorContractAddress = '0xc249E01F5F361b862BFCf1c9651A20fDe18A50a4';
+const facilitatorContractAddress = '0x9EA2a6f7D0Ea4Af488aD6962578848e3880FA5d7';
 
 interface NFT {
   collectionName: string,

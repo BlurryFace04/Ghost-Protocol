@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react';
 import { useAccount, useContractWrite, useContractRead, useWaitForTransaction } from 'wagmi'
+import { ethers } from 'ethers';
 import Image from 'next/image'
 import NFTAvailable from '@/components/NFTAvailable'
 import NFTDeposited from '@/components/NFTDeposited'
@@ -60,7 +61,7 @@ interface NFT {
   tokenType: string
 }
 
-const facilitatorContractAddress = '0xc249E01F5F361b862BFCf1c9651A20fDe18A50a4';
+const facilitatorContractAddress = '0x9EA2a6f7D0Ea4Af488aD6962578848e3880FA5d7';
 
 interface GroupedNFTs {
   [collectionName: string]: NFT[];
@@ -92,6 +93,28 @@ function Page() {
     functionName: 'nftDeposits',
     args: [address, depositIndex]
   });
+
+  const borrowedAmountRead = useContractRead({
+    address: facilitatorContractAddress,
+    abi: FacilitatorContractABI,
+    functionName: 'borrowedAmount',
+    args: [address],
+  });
+
+  const borrowPowerRead = useContractRead({
+    address: facilitatorContractAddress,
+    abi: FacilitatorContractABI,
+    functionName: 'borrowPower',
+    args: [address],
+  });
+
+  const borrowedAmountFormatted = borrowedAmountRead.data 
+  ? parseFloat(ethers.formatUnits(borrowedAmountRead.data.toString(), 18)).toFixed(2)
+  : '0.00';
+
+  const borrowPowerFormatted = borrowPowerRead.data 
+    ? parseFloat(ethers.formatUnits(borrowPowerRead.data.toString(), 18)).toFixed(2)
+    : '0.00';
 
   useEffect(() => {
     if (depositReadResult.data) {
@@ -280,7 +303,7 @@ function Page() {
                             <Label>GHO</Label>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center">0.1134539</TableCell>
+                        <TableCell className="text-center">{borrowedAmountFormatted}</TableCell>
                         <TableCell className="text-center">2.02 %</TableCell>
                         <TableCell className="text-right">
                           <Button>Repay</Button>
@@ -315,7 +338,7 @@ function Page() {
                             <Label>GHO</Label>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center">633.60</TableCell>
+                        <TableCell className="text-center">{borrowPowerFormatted}</TableCell>
                         <TableCell className="text-center">2.02 %</TableCell>
                         <TableCell className="text-right">
                           <Button>Borrow</Button>
