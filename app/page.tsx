@@ -7,6 +7,7 @@ import { ethers } from 'ethers';
 import Image from 'next/image'
 import NFTAvailable from '@/components/NFTAvailable'
 import NFTDeposited from '@/components/NFTDeposited'
+import Borrow from '@/components/Borrow'
 import FacilitatorContractABI from '.././FacilitatorContractABI.json'
 
 import {
@@ -45,10 +46,22 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/components/ui/avatar"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
 
 interface NFT {
   collectionName: string,
@@ -86,6 +99,7 @@ function Page() {
   const [loadingNFTs, setLoadingNFTs] = useState(true);
   const [depositIndex, setDepositIndex] = useState(0);
   const [depositedNFTs, setDepositedNFTs] = useState<any[]>([]);
+  const [borrowAmount, setBorrowAmount] = useState('');
 
   const depositReadResult = useContractRead({
     address: facilitatorContractAddress,
@@ -108,9 +122,12 @@ function Page() {
     args: [address],
   });
 
+  console.log("Borrowed amount read: ", borrowedAmountRead.data);
+  console.log("Borrow power read: ", borrowPowerRead.data);
+
   const borrowedAmountFormatted = borrowedAmountRead.data 
-  ? parseFloat(ethers.formatUnits(borrowedAmountRead.data.toString(), 18)).toFixed(2)
-  : '0.00';
+    ? parseFloat(ethers.formatUnits(borrowedAmountRead.data.toString(), 18)).toFixed(2)
+    : '0.00';
 
   const borrowPowerFormatted = borrowPowerRead.data 
     ? parseFloat(ethers.formatUnits(borrowPowerRead.data.toString(), 18)).toFixed(2)
@@ -341,7 +358,23 @@ function Page() {
                         <TableCell className="text-center">{borrowPowerFormatted}</TableCell>
                         <TableCell className="text-center">2.02 %</TableCell>
                         <TableCell className="text-right">
-                          <Button>Borrow</Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button>Borrow</Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Borrow GHO</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <Borrow amount={borrowAmount} />
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                         </TableCell>
                       </TableRow>
                     </TableBody>
