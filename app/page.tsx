@@ -3,9 +3,10 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react';
 import { useAccount, useContractWrite, useContractRead, useWaitForTransaction } from 'wagmi'
-import Image from 'next/image';
-import FacilitatorContractABI from './FacilitatorContractABI.json';
-import ERC721ABI from './ERC721ABI.json';
+import Image from 'next/image'
+import NFTAvailable from '@/components/NFTAvailable'
+import NFTDeposited from '@/components/NFTDeposited'
+import FacilitatorContractABI from '.././FacilitatorContractABI.json'
 
 import {
   Card,
@@ -65,102 +66,92 @@ interface GroupedNFTs {
   [collectionName: string]: NFT[];
 }
 
-function NFTItem({ nft }: { nft: NFT}) {
-  const { address } = useAccount();
-  const [approvalTxHash, setApprovalTxHash] = useState<`0x${string}` | undefined>(undefined);
-  const [isDepositInitiated, setIsDepositInitiated] = useState(false);
-
-  const { data: isApproved, isLoading: isApprovedLoading } = useContractRead({
-    address: nft.contractAddress as `0x${string}`,
-    abi: ERC721ABI,
-    functionName: 'isApprovedForAll',
-    args: [address, facilitatorContractAddress]
-  });
-
-  const { write: approveNFT, isLoading: isApproveLoading } = useContractWrite({
-    address: nft.contractAddress as `0x${string}`,
-    abi: ERC721ABI,
-    functionName: 'setApprovalForAll',
-    args: [facilitatorContractAddress, true],
-    onSuccess(data) {
-      setApprovalTxHash(data.hash as `0x${string}`);
-    },
-  });
-
-  const { data: approvalTxData, isLoading: isApprovalTxLoading } = useWaitForTransaction({ 
-    hash: approvalTxHash,
-    enabled: !!approvalTxHash,
-  });
-
-  const { write: depositNFT, isLoading: isDepositLoading } = useContractWrite({
-    address: facilitatorContractAddress, 
-    abi: FacilitatorContractABI,
-    functionName: 'depositNFT',
-    args: [nft.contractAddress, nft.tokenId]
-  });
-
-  useEffect(() => {
-    // Check if approval is confirmed and deposit is not already initiated
-    if (approvalTxData && !isDepositInitiated) {
-      depositNFT();
-      setIsDepositInitiated(true); // Prevent further deposit calls
-    }
-  }, [approvalTxData, isDepositInitiated, depositNFT]);
-
-  const handleSupply = async () => {
-    console.log("Is approved: ", isApproved);
-    if (!isApproved && !isApprovalTxLoading && !isApproveLoading) {
-      await approveNFT();
-    } else if (isApproved && !isDepositInitiated) {
-      depositNFT();
-      setIsDepositInitiated(true);
-    }
-  };
-
-  const isButtonDisabled = isApproveLoading || isApprovalTxLoading || isDepositLoading;
-
-  return (
-    <Button variant='outline' onClick={handleSupply} disabled={isButtonDisabled}>Supply</Button>
+const filterUserNFTs = (allNFTs: NFT[], userNFTs: any[]) => {
+  console.log("Filtering user NFTs: ", allNFTs, userNFTs)
+  return allNFTs.filter(nft => 
+    userNFTs.some(userNft => 
+      userNft && nft && 
+      userNft.nftContract?.toLowerCase() === nft.contractAddress?.toLowerCase() &&
+      userNft.tokenId === nft.tokenId
+    )
   );
-}
+};
 
 function Page() {
   const { address } = useAccount();
-
   const [NFTs, setNFTs] = useState<NFT[]>([]);
   const [groupedNFTs, setGroupedNFTs] = useState<GroupedNFTs>({});
+  const [groupedDepositedNFTs, setGroupedDepositedNFTs] = useState<GroupedNFTs>({});
   const [loadingNFTs, setLoadingNFTs] = useState(true);
+  const [depositIndex, setDepositIndex] = useState(0);
+  const [depositedNFTs, setDepositedNFTs] = useState<any[]>([]);
+
+  const depositReadResult = useContractRead({
+    address: facilitatorContractAddress,
+    abi: FacilitatorContractABI,
+    functionName: 'nftDeposits',
+    args: [address, depositIndex]
+  });
 
   useEffect(() => {
-    if (!address) return;
-    console.log("Address: ", address);
+    if (depositReadResult.data) {
+      const data = depositReadResult.data as [string, BigInt]; 
+    const convertedDeposit = {
+      nftContract: data[0],
+      tokenId: data[1].toString()
+    };
+      setDepositedNFTs(current => [...current, convertedDeposit]);
+      setDepositIndex(depositIndex + 1);
+    }
+    if (depositReadResult.error) {
+      console.log("No more NFTs or an error occurred:", depositReadResult.error.message);
+    }
+  }, [depositReadResult.data, depositReadResult.error, depositIndex]);
 
+  useEffect(() => {
     const fetchNFTs = async () => {
+      setLoadingNFTs(true);
       try {
-        const response = await fetch(`/api/nfts/fetch/${address}`);
-        const data: NFT[] = await response.json();
-        console.log("NFTs: ", data);
-        setNFTs(data);
+        const userResponse = await fetch(`/api/nfts/fetch/${address}`);
+        const userData = await userResponse.json() as NFT[];
+        setNFTs(userData);
 
-        // Group NFTs by their collection names
-        const grouped = data.reduce<GroupedNFTs>((acc, nft) => {
+        const grouped = userData.reduce<GroupedNFTs>((acc, nft) => {
           const collection = nft.collectionName || 'Unknown';
           acc[collection] = acc[collection] || [];
           acc[collection].push(nft);
           return acc;
         }, {});
-        console.log("Grouped NFTs: ", grouped);
         setGroupedNFTs(grouped);
 
+        const facilitatorResponse = await fetch(`/api/nfts/fetch/${facilitatorContractAddress}`);
+        const facilitatorData = await facilitatorResponse.json() as NFT[];
+        console.log("Facilitator has these NFTs: ", facilitatorData)
+
+        if (depositedNFTs.length > 0) {
+          console.log("User has deposited NFTs, depositedNFTs: ", depositedNFTs);
+          const userNFTs = filterUserNFTs(facilitatorData, depositedNFTs);
+          console.log("User has these NFTs deposited: ", userNFTs);
+          const groupedDeposited = userNFTs.reduce<GroupedNFTs>((acc, nft) => {
+            const collection = nft.collectionName || 'Unknown';
+            acc[collection] = acc[collection] || [];
+            acc[collection].push(nft);
+            return acc;
+          }, {});
+          console.log("Grouped deposited: ", groupedDeposited);
+          setGroupedDepositedNFTs(groupedDeposited);
+        } else {
+          console.log("No NFTs deposited yet");
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching NFTs: ", error);
       } finally {
         setLoadingNFTs(false);
       }
     };
 
     fetchNFTs();
-  }, [address]);
+  }, [address, depositedNFTs]);
 
   return (
     <div>
@@ -183,28 +174,27 @@ function Page() {
                 <CardTitle className="text-xl">Your supplies</CardTitle>
               </CardHeader>
               <CardContent className='pl-16 pr-16'>
-                {/* {Object.entries(groupedNFTs).map(([collectionName, nfts]) => (
+                {Object.entries(groupedDepositedNFTs).map(([collectionName, nfts]) => (
                   <div className="pb-4">
                     <CardTitle className="text-lg mb-4">{collectionName}</CardTitle>
                     <Carousel>
                       <CarouselContent>
                         {nfts.map((nft, index) => (
-                          <CarouselItem key={nft.tokenId} className="md:basis-1/2 lg:basis-1/3">
+                          <CarouselItem key={nft.tokenId} className="xl:basis-1/2 2xl:basis-1/3">
                             <Card>
                               <CardContent className='p-0 rounded-lg'>
                                 <Image 
                                   src={nft.image} 
                                   alt={nft.name} 
-                                  width={240}
-                                  height={240}
+                                  width={400}
+                                  height={400}
                                   className='rounded-t-lg'
                                 />
                               </CardContent>
                               <CardContent className="p-4">
                                 <Label className="text-md pl-2">{nft.name}</Label>
                                 <div className="flex items-center space-x-2 pl-2 pt-2">
-                                  <Label htmlFor="collateral">collateral</Label>
-                                  <Switch id="collateral" />
+                                  <NFTDeposited key={nft.tokenId} nft={nft}/>
                                 </div>
                               </CardContent>
                             </Card>
@@ -215,7 +205,7 @@ function Page() {
                       <CarouselNext />
                     </Carousel>
                   </div>
-                ))} */}
+                ))}
               </CardContent>
             </Card>
             <Card className="mt-4">
@@ -243,15 +233,8 @@ function Page() {
                               <CardContent className="p-4">
                                 <Label className="text-md pl-2">{nft.name}</Label>
                                 <div className="flex items-center space-x-2 pl-2 pt-2">
-                                  {/* <Label htmlFor="collateral">collateral</Label> */}
-                                  {/* <Switch id="collateral" /> */}
-                                  {/* <Button variant="outline" className="">Supply</Button> */}
-                                  <NFTItem key={nft.tokenId} nft={nft}/>
+                                  <NFTAvailable key={nft.tokenId} nft={nft}/>
                                 </div>
-                                {/* <div className="flex items-center space-x-2 mt-2">
-                                  <Button className="p-4" variant="outline">Supply</Button>
-                                  <Button variant="outline" className="p-4">Withdraw</Button>
-                                </div> */}
                               </CardContent>
                             </Card>
                           </CarouselItem>
@@ -310,9 +293,6 @@ function Page() {
               <Card className="mt-4">
                 <CardHeader>
                   <CardTitle className="text-xl">Assets to borrow</CardTitle>
-                  {/* <CardDescription className="pt-2">
-                    <Badge variant="outline" className="rounded-sm">Borrow power used 99%</Badge>
-                  </CardDescription> */}
                 </CardHeader>
                 <CardContent>
                   <Table>
