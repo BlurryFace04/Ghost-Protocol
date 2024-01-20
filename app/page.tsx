@@ -59,7 +59,7 @@ interface NFT {
   tokenType: string
 }
 
-const facilitatorContractAddress = '0xAdbe6d7AbD11cef2682Eb18Ff6A95fa7014463f3';
+const facilitatorContractAddress = '0xc249E01F5F361b862BFCf1c9651A20fDe18A50a4';
 
 interface GroupedNFTs {
   [collectionName: string]: NFT[];
@@ -67,50 +67,60 @@ interface GroupedNFTs {
 
 function NFTItem({ nft }: { nft: NFT}) {
   const { address } = useAccount();
-  const [isApproving, setIsApproving] = useState(false);
+  const [approvalTxHash, setApprovalTxHash] = useState<`0x${string}` | undefined>(undefined);
+  const [isDepositInitiated, setIsDepositInitiated] = useState(false);
 
-  const { data: isApproved } = useContractRead({
+  const { data: isApproved, isLoading: isApprovedLoading } = useContractRead({
     address: nft.contractAddress as `0x${string}`,
     abi: ERC721ABI,
     functionName: 'isApprovedForAll',
     args: [address, facilitatorContractAddress]
   });
 
-  const { data: approveData, write: approveNFT, isLoading: isApproveLoading, error: approveError } = useContractWrite({
+  const { write: approveNFT, isLoading: isApproveLoading } = useContractWrite({
     address: nft.contractAddress as `0x${string}`,
     abi: ERC721ABI,
     functionName: 'setApprovalForAll',
     args: [facilitatorContractAddress, true],
+    onSuccess(data) {
+      setApprovalTxHash(data.hash as `0x${string}`);
+    },
   });
 
-  const { write: depositNFT } = useContractWrite({
+  const { data: approvalTxData, isLoading: isApprovalTxLoading } = useWaitForTransaction({ 
+    hash: approvalTxHash,
+    enabled: !!approvalTxHash,
+  });
+
+  const { write: depositNFT, isLoading: isDepositLoading } = useContractWrite({
     address: facilitatorContractAddress, 
     abi: FacilitatorContractABI,
     functionName: 'depositNFT',
     args: [nft.contractAddress, nft.tokenId]
   });
 
-  const handleSupply = async () => {
-    if (!isApproved) {
-      setIsApproving(true);
-      await approveNFT();
-    } else {
+  useEffect(() => {
+    // Check if approval is confirmed and deposit is not already initiated
+    if (approvalTxData && !isDepositInitiated) {
       depositNFT();
+      setIsDepositInitiated(true); // Prevent further deposit calls
+    }
+  }, [approvalTxData, isDepositInitiated, depositNFT]);
+
+  const handleSupply = async () => {
+    console.log("Is approved: ", isApproved);
+    if (!isApproved && !isApprovalTxLoading && !isApproveLoading) {
+      await approveNFT();
+    } else if (isApproved && !isDepositInitiated) {
+      depositNFT();
+      setIsDepositInitiated(true);
     }
   };
 
-  useEffect(() => {
-    if (!isApproveLoading && isApproving && !approveError) {
-      setIsApproving(false);
-      depositNFT();
-    }
-    if (approveError) {
-      setIsApproving(false);
-    }
-  }, [isApproveLoading, isApproving, approveError, depositNFT]);
+  const isButtonDisabled = isApproveLoading || isApprovalTxLoading || isDepositLoading;
 
   return (
-    <Button variant='outline' onClick={handleSupply}>Supply</Button>
+    <Button variant='outline' onClick={handleSupply} disabled={isButtonDisabled}>Supply</Button>
   );
 }
 
