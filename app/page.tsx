@@ -135,6 +135,21 @@ function Page() {
     ? parseFloat(ethers.formatUnits(borrowPowerRead.data.toString(), 18)).toFixed(2)
     : '0.00';
 
+
+  const borrowedAmountValue = borrowedAmountFormatted
+    ? parseFloat(borrowedAmountFormatted)
+    : 0;
+  
+  const borrowPowerValue = borrowPowerFormatted
+    ? parseFloat(borrowPowerFormatted)
+    : 0;
+  
+  const borrowPowerPercentage = borrowedAmountValue && borrowPowerValue
+    ? (borrowedAmountValue / (borrowedAmountValue + borrowPowerValue)) * 100
+    : 0;
+  
+  const formattedBorrowPowerPercentage = borrowPowerPercentage.toFixed(2);  
+
   useEffect(() => {
     if (depositReadResult.data) {
       const data = depositReadResult.data as [string, BigInt]; 
@@ -299,7 +314,7 @@ function Page() {
                 <CardHeader>
                   <CardTitle className="text-xl">Your borrows</CardTitle>
                   <CardDescription className="pt-2">
-                    <Badge variant="outline" className="rounded-sm">Borrow power used 99%</Badge>
+                    <Badge variant="outline" className="rounded-sm">Borrow power used {formattedBorrowPowerPercentage}%</Badge>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
