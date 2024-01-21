@@ -16,7 +16,7 @@ const config = createConfig(
 export function EthereumProvider({ children }: { children: React.ReactNode }) {
   return (
     <WagmiConfig config={config}>
-      <ConnectKitProvider>
+      <ConnectKitProvider theme="rounded">
         {children}
       </ConnectKitProvider>
     </WagmiConfig>

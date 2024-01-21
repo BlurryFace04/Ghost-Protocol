@@ -76,3 +76,4 @@ function NFTAvailable({ nft }: { nft: NFT}) {
 }
 
 export default NFTAvailable;
+  

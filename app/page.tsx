@@ -200,15 +200,16 @@ function Page() {
       {!address ? (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <img
-            src="gho.jpeg"
+            src="ghost-protocol-logo.png"
             alt="GHO"
             className="mt-[-20vh]"
+            style={{ width: '40%', height: 'auto' }}
           />
           <p className="font-bold text-center text-2xl mt-4">Please, connect your wallet</p>
           <p className="text-center text-xl mt-4">Please connect your wallet to see your NFT collaterals and borrowings</p>
         </div>
       ) : (
-        <div style={{ padding: '200px', display: 'flex', justifyContent: 'space-between' }} className="overflow-y-auto max-h-[94vh] nft-scroll">
+        <div style={{ padding: '120px', display: 'flex', justifyContent: 'space-between' }} className="overflow-y-auto max-h-[94vh] nft-scroll">
           {/* Left side */}
           <div style={{ width: '50%' }}> 
             <Card>
@@ -306,8 +307,8 @@ function Page() {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="w-[175px]">Asset</TableHead>
-                        <TableHead className="text-center w-[170px]">Debt</TableHead>
-                        <TableHead className="text-center w-[170px]">APY</TableHead>
+                        <TableHead className="text-center w-[190px]">Debt</TableHead>
+                        <TableHead className="text-center w-[210px]">APY</TableHead>
                         <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>
@@ -357,8 +358,8 @@ function Page() {
                     <TableHeader>
                       <TableRow>
                         <TableHead className="w-[175px]">Asset</TableHead>
-                        <TableHead className="text-center w-[170px]">Available</TableHead>
-                        <TableHead className="text-center w-[170px]">APY</TableHead>
+                        <TableHead className="text-center w-[190px]">Available</TableHead>
+                        <TableHead className="text-center w-[210px]">APY</TableHead>
                         <TableHead></TableHead>
                       </TableRow>
                     </TableHeader>

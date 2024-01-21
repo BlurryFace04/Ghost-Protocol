@@ -19,7 +19,6 @@ export function Header() {
         <Sidebar>
           <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
             {/* @ts-ignore */}
-            {/* <SidebarList userId={session?.user?.id} /> */}
           </React.Suspense>
           <SidebarFooter>
             <ThemeToggle />
