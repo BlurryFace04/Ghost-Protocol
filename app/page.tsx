@@ -8,6 +8,7 @@ import Image from 'next/image'
 import NFTAvailable from '@/components/NFTAvailable'
 import NFTDeposited from '@/components/NFTDeposited'
 import Borrow from '@/components/Borrow'
+import Repay from '@/components/Repay'
 import FacilitatorContractABI from '.././FacilitatorContractABI.json'
 
 import {
@@ -100,6 +101,7 @@ function Page() {
   const [depositIndex, setDepositIndex] = useState(0);
   const [depositedNFTs, setDepositedNFTs] = useState<any[]>([]);
   const [borrowAmount, setBorrowAmount] = useState('');
+  const [repayAmount, setRepayAmount] = useState('');
 
   const depositReadResult = useContractRead({
     address: facilitatorContractAddress,
@@ -323,7 +325,24 @@ function Page() {
                         <TableCell className="text-center">{borrowedAmountFormatted}</TableCell>
                         <TableCell className="text-center">2.02 %</TableCell>
                         <TableCell className="text-right">
-                          <Button>Repay</Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button>Repay</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Repay GHO</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  <Input placeholder="Amount" value={repayAmount} onChange={(e) => setRepayAmount(e.target.value)} />
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <Repay amount={repayAmount} />
+                                {/* <Borrow amount={repayAmount} /> */}
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </TableCell>
                       </TableRow>
                     </TableBody>
@@ -358,23 +377,23 @@ function Page() {
                         <TableCell className="text-center">{borrowPowerFormatted}</TableCell>
                         <TableCell className="text-center">2.02 %</TableCell>
                         <TableCell className="text-right">
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button>Borrow</Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Borrow GHO</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button>Borrow</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Borrow GHO</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <Borrow amount={borrowAmount} />
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
                         </TableCell>
                       </TableRow>
                     </TableBody>
