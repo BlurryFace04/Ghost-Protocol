@@ -339,7 +339,6 @@ function Page() {
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <Repay amount={repayAmount} />
-                                {/* <Borrow amount={repayAmount} /> */}
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
