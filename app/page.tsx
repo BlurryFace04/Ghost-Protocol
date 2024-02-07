@@ -360,6 +360,7 @@ function Page() {
                           </AlertDialog>
                         </TableCell>
                       </TableRow>
+                    
                     </TableBody>
                   </Table>
                 </CardContent>
@@ -399,6 +400,134 @@ function Page() {
                             <AlertDialogContent>
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Borrow GHO</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <Borrow amount={borrowAmount} />
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center space-x-3 mt-2">
+                            <Avatar> 
+                              <AvatarImage src="https://app-aave-com.ipns.dweb.link/icons/tokens/wsteth.svg" alt="GHO"/>
+                              <AvatarFallback>wstETH</AvatarFallback>
+                            </Avatar>
+                            <Label>wstETH</Label>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{borrowPowerFormatted}</TableCell>
+                        <TableCell className="text-center">0.31 %</TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button>Borrow</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Borrow wstETH</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <Borrow amount={borrowAmount} />
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center space-x-3 mt-2">
+                            <Avatar> 
+                              <AvatarImage src="https://app-aave-com.ipns.dweb.link/icons/tokens/eth.svg" alt="GHO"/>
+                              <AvatarFallback>ETH</AvatarFallback>
+                            </Avatar>
+                            <Label>ETH</Label>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{borrowPowerFormatted}</TableCell>
+                        <TableCell className="text-center">2.43 %</TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button>Borrow</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Borrow ETH</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <Borrow amount={borrowAmount} />
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center space-x-3 mt-2">
+                            <Avatar> 
+                              <AvatarImage src="https://app-aave-com.ipns.dweb.link/icons/tokens/wbtc.svg" alt="GHO"/>
+                              <AvatarFallback>WBTC</AvatarFallback>
+                            </Avatar>
+                            <Label>WBTC</Label>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{borrowPowerFormatted}</TableCell>
+                        <TableCell className="text-center">0.76 %</TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button>Borrow</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Borrow WBTC</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <Borrow amount={borrowAmount} />
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-medium">
+                          <div className="flex items-center space-x-3 mt-2">
+                            <Avatar> 
+                              <AvatarImage src="https://app-aave-com.ipns.dweb.link/icons/tokens/usdc.svg" alt="GHO"/>
+                              <AvatarFallback>USDC</AvatarFallback>
+                            </Avatar>
+                            <Label>USDC</Label>
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-center">{borrowPowerFormatted}</TableCell>
+                        <TableCell className="text-center">6.16 %</TableCell>
+                        <TableCell className="text-right">
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button>Borrow</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Borrow USDC</AlertDialogTitle>
                                 <AlertDialogDescription>
                                   <Input placeholder="Amount" value={borrowAmount} onChange={(e) => setBorrowAmount(e.target.value)} />
                                 </AlertDialogDescription>

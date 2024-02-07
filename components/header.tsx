@@ -1,15 +1,11 @@
 'use client'
+import * as React from 'react';
+import Link from 'next/link';
 
-import * as React from 'react'
-import Link from 'next/link'
-
-import { cn } from '@/lib/utils'
-import { Button, buttonVariants } from '@/components/ui/button'
-import { Sidebar } from '@/components/sidebar'
-import { SidebarFooter } from '@/components/sidebar-footer'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { IconSeparator } from '@/components/ui/icons'
-
+import { Button } from '@/components/ui/button'; // Importing Button component
+import { Sidebar } from '@/components/sidebar';
+import { SidebarFooter } from '@/components/sidebar-footer';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { ConnectKitButton } from "connectkit";
 
 export function Header() {
@@ -25,9 +21,26 @@ export function Header() {
           </SidebarFooter>
         </Sidebar>
       </div>
+      {/* Centered Buttons */}
+      <div className="flex-1 flex justify-center items-center space-x-2">
+        <Link href="/dashboard" passHref>
+          <Button>Dashboard</Button>
+        </Link>
+        <Link href="/governance" passHref>
+          <Button>Governance</Button>
+        </Link>
+        <Link href="/market" passHref>
+          <Button>Market</Button>
+        </Link>
+        <Link href="/stake" passHref>
+          <Button>Stake</Button>
+        </Link>
+        {/* Assuming 'More' does not navigate to a specific page but might open a dropdown or perform another action */}
+        <Button>More</Button>
+      </div>
       <div className="flex items-center justify-end space-x-2">
         <ConnectKitButton />
       </div>
     </header>
-  )
+  );
 }
